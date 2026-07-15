@@ -67,3 +67,17 @@ processing steps.
 
 Set up Git configuration if needed, create the first Git commit, then add GitHub Actions so tests and Ruff checks run automatically on every push.
 
+
+## Session 2 Answers to Conceptual Questions
+
+1. **Why must every extracted metric include an `evidence` field?**
+The evidence field provides the exact source text from which the data was fetched, allowing us to verify the LLM's claim and ensure it isn't hallucinated.
+
+2. **Why does a metric need both `value` and `unit`?**
+A raw number isn't enough; the unit specifies whether the value is in millions, billions, percentages, or another currency, giving it necessary context.
+
+3. **Why is `metrics` a list rather than a single `FinancialMetric`?**
+Earnings reports contain multiple financial metrics (like Revenue, EPS, Gross Margin), not just one, so we need a list to capture all of them.
+
+4. **Why may `guidance` be `None`, while `company` may not?**
+Not all companies provide future guidance in every report, making it optional, whereas the company name is a fundamental requirement for the extraction to be valid.
