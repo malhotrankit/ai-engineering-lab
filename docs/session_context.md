@@ -110,4 +110,39 @@ class EarningsExtraction(BaseModel):
         return [risk.strip() for risk in values if risk.strip()]
 ```
 
+## Session 3 — Date: 2026-07-16
 
+### Completed
+
+- Implemented a clean, simple, keyword-based fake extractor in `src/ai_engineering_lab/fake_extractor.py` to simulate LLM structured JSON outputs.
+- Developed scenario-based mock responses for:
+  - Valid and grounded data.
+  - Malformed data (missing required schema fields).
+  - Ungrounded data (valid schema structure but fabricated/hallucinated evidence text).
+- Implemented a deterministic evidence grounding checker `verify_evidence` that ensures metric evidence quotes exist as substrings within the source text.
+- Added comprehensive unit tests in `tests/test_fake_extractor.py` covering all three cases.
+- Confirmed that all 15 tests pass successfully.
+- Ran Ruff formatting and checks, ensuring clean code hygiene.
+
+### Commands and outcomes
+
+- `PYTHONPATH=src .venv/bin/pytest` → 15 passed
+- `.venv/bin/ruff check .` → All checks passed!
+- `.venv/bin/ruff format .` → 1 file reformatted, 5 left unchanged
+
+### Concepts understood / questions remaining
+
+- Understood that schema validation only guarantees structure and type safety, not factual accuracy or grounding.
+- Understood that evidence quotes are crucial for RAG validation but must be programmatically verified against the raw text.
+- Understood that LLMs should not perform mathematical/financial operations; arithmetic must be handled by deterministic code (using `Decimal`).
+
+### Files created or changed
+
+- `src/ai_engineering_lab/fake_extractor.py` (modified)
+- `tests/test_fake_extractor.py` (created)
+- `learning_log.md` (modified)
+- `docs/session_context.md` (modified)
+
+### Exact next step
+
+- Transition to making live LLM API calls with structured outputs, integrating the Pydantic schemas and grounding validation.
