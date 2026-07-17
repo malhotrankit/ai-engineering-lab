@@ -146,3 +146,37 @@ class EarningsExtraction(BaseModel):
 ### Exact next step
 
 - Transition to making live LLM API calls with structured outputs, integrating the Pydantic schemas and grounding validation.
+
+
+## Session 4 — Date: 2026-07-17
+
+### Completed
+
+- Built `src/ai_engineering_lab/live_extractor.py` to integrate the live Gemini API using the `google-genai` SDK.
+- Enforced structured output natively using the `response_schema` configuration.
+- Securely stored the API key using `python-dotenv` and a `.gitignore` validated `.env` file.
+- Executed `run_live_test.py` to verify the pipeline from raw text -> LLM -> Pydantic object works end-to-end.
+
+### Commands and outcomes
+
+- `pip install google-genai python-dotenv` → SDK installed.
+- `pip freeze > requirements.txt` → Dependencies updated.
+- `PYTHONPATH=src python run_live_test.py` → Successfully parsed complex financial metrics out of raw text into Python objects.
+
+### Concepts understood / questions remaining
+
+- The live API enforces structure perfectly, but grounding validation must still occur post-API call to catch structured hallucinations.
+
+### Files created or changed
+
+- `.env` (created locally)
+- `requirements.txt` (modified)
+- `src/ai_engineering_lab/live_extractor.py` (created)
+- `run_live_test.py` (created)
+- `learning_log.md` (modified)
+- `docs/session_context.md` (modified)
+
+### Exact next step
+
+- Weeks 4–6: Transition to "RAG From First Principles" building the `filing-rag-service` with Postgres/pgvector.
+

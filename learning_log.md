@@ -81,3 +81,46 @@ Earnings reports contain multiple financial metrics (like Revenue, EPS, Gross Ma
 
 4. **Why may `guidance` be `None`, while `company` may not?**
 Not all companies provide future guidance in every report, making it optional, whereas the company name is a fundamental requirement for the extraction to be valid.
+
+## Session 4 — Date: 2026-07-17
+
+### Completed
+- Configured `.env` file securely and installed `google-genai` and `python-dotenv`.
+- Built `live_extractor.py` to call the Gemini API using the new structured outputs feature.
+- Passed our Pydantic `EarningsExtraction` schema directly into the `response_schema` config to force the LLM to return perfectly structured data.
+- Tested the live API successfully against a sample Apple earnings report.
+
+### Concepts understood
+- **API Security:** API keys must be kept in `.env` files and ignored by Git to prevent massive accidental billing charges from leaked credentials.
+- **Structured Outputs via API:** We can force modern LLMs to conform to Pydantic schemas natively through the API configuration, ensuring we get a clean object without manual string parsing.
+- **The Grounding Reality:** Even with the live API enforcing the schema perfectly, the LLM can still hallucinate numbers that fit the structure. The deterministic `verify_evidence` function we wrote earlier remains mandatory to prove factual grounding!
+- **Hallucinated Evidence:** The LLM can easily hallucinate the `evidence` string itself. Pydantic will accept the hallucinated string because it's technically a valid string. Our deterministic `verify_evidence` function is the only way to prove the LLM's quoted evidence actually exists in the original raw text.
+
+
+
+## Session 3 — Date: 2026-07-16
+
+### Completed
+
+- Implemented a clean, simple, keyword-based `extract_earnings_fake` and `verify_evidence` in [fake_extractor.py](file:///Users/ankitmalhotra/Developer/ai-engineering-lab/src/ai_engineering_lab/fake_extractor.py).
+- Created unit tests in [test_fake_extractor.py](file:///Users/ankitmalhotra/Developer/ai-engineering-lab/tests/test_fake_extractor.py) to cover:
+  - Valid structured outputs that pass Pydantic validation and grounding checks.
+  - Malformed structured outputs that fail Pydantic validation.
+  - Ungrounded structured outputs that pass Pydantic validation but fail grounding checks.
+- Formatted and linted files with Ruff.
+- Ran test suite successfully (15 tests passed).
+
+### Session 3 Answers to Conceptual Questions
+
+1. **Why can Pydantic accept a fabricated claim?**
+   Pydantic validates the data structure, field types, and constraints (e.g. string length, non-empty fields). It does not check if the content of the data matches the reality of the source text.
+
+2. **What does a schema prove, and what does it not prove?**
+   A schema proves structural conformity and type correctness (e.g., this is a list of financial metrics with required fields). It does not prove that the data is true, grounded in the source document, or mathematically correct.
+
+3. **Why is an evidence quote useful but not automatically enough?**
+   An evidence quote allows verification (so humans or automated systems can verify the claim against the source document). It is not enough on its own because the model might have fabricated the quote itself (hallucination) or selected a quote that doesn't actually support the extracted value.
+
+4. **Why must financial calculations remain deterministic Python code rather than LLM arithmetic?**
+   LLMs are next-token predictors and lack a reliable mathematical reasoning engine. They often make arithmetic errors, whereas deterministic Python code using exact precision types (like `Decimal`) guarantees 100% mathematical accuracy and reproducibility.
+
