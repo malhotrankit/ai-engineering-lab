@@ -178,5 +178,6 @@ class EarningsExtraction(BaseModel):
 
 ### Exact next step
 
-- Weeks 4–6: Transition to "RAG From First Principles" building the `filing-rag-service` with Postgres/pgvector.
+- **PAUSED:** The learner is currently taking a break from coding to watch the theory videos for **IBM Course 1** (Generative AI Apps) and **IBM Course 2** (Intro to RAG & Vector Databases).
+- **UPON RETURN:** Kick off **Weeks 4–6 (RAG From First Principles)**. We will begin building the `filing-rag-service` using Postgres and `pgvector`.
 
