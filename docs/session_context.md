@@ -178,6 +178,15 @@ class EarningsExtraction(BaseModel):
 
 ### Exact next step
 
-- **PAUSED:** The learner is currently taking a break from coding to watch the theory videos for **IBM Course 1** (Generative AI Apps) and **IBM Course 2** (Intro to RAG & Vector Databases).
-- **UPON RETURN:** Kick off **Weeks 4–6 (RAG From First Principles)**. We will begin building the `filing-rag-service` using Postgres and `pgvector`.
+- **PAUSED:** The learner is currently focusing 100% on completing Coursera theory and lab modules (Course 2 completed ➔ Course 6 AI Agents in progress) to eliminate context switching.
+- **UPON RETURN (Scheduled Sprint 1 after Course 7):** Build `src/ai_engineering_lab/agent.py` — turning the financial extractor into a full Autonomous LangGraph Agent with tools and RAG document search!
+
+## Session 6 — Date: 2026-08-05
+
+### Completed
+- Learner returned after a 1-week break.
+- Conducted revision roadmap setup for Course 1 & Course 2 refresh.
+- Next step: Complete Course 1 & 2 PDF revision, then launch **Course 6: AI Agents**!
+
+
 

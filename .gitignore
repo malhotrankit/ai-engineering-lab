@@ -1,5 +1,32 @@
+# Virtual environment
 .venv/
+
+# Python cache
 __pycache__/
 .pytest_cache/
 .ruff_cache/
+
+# macOS junk
+.DS_Store
+
+# Temp files
+temp_*.html
+temp_*.pdf
+
+# API Keys — never commit
 .env
+.env.local
+.env.production
+.env.staging
+**/.env
+**/coursera_notes/.env
+
+# ChromaDB & LlamaIndex runtime storage (auto-generated on first run)
+chroma_db/
+chroma_db_storage/
+*.chroma
+**/sample_data/chroma_db/
+**/sample_data/llama_storage/
+
+# Local scratch space
+scratch/

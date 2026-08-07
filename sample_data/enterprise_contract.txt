@@ -1,0 +1,19 @@
+
+ENTERPRISE SERVICE LEVEL AGREEMENT & MASTER SOFTWARE LICENSE (SLA-2025)
+Contract ID: SLA-8849-CONFIDENTIAL
+
+1. PARTIES & TERMINATION
+This Agreement is entered into between Cyberdyne Cloud Systems ("Provider") and Apex Financial Group ("Client").
+Either party may terminate this agreement with ninety (90) days written notice. Early termination by Client without cause incurs a early exit fee equal to two (2) months of average recurring billing.
+
+2. SERVICE LEVEL AGREEMENT (SLA) & UPTIME GUARANTEE
+Provider guarantees a monthly service uptime SLA of 99.95%, excluding scheduled maintenance windows.
+Scheduled maintenance shall occur only between 01:00 AM and 04:00 AM UTC on Sundays, with at least 48 hours prior notification.
+If monthly uptime falls below 99.95%, Provider shall credit Client 10% of monthly fee. If uptime falls below 99.0%, Provider shall credit Client 30% of monthly fee.
+
+3. DATA RETENTION & SECURITY POLICIES
+All client data stored in Provider's cloud infrastructure is encrypted in transit using TLS 1.3 and at rest using AES-256 encryption.
+Upon contract termination, Provider shall purge and securely sanitize all Client data within thirty (30) days and provide a certified Certificate of Data Destruction.
+
+4. LIABILITY & INDEMNIFICATION LIMITS
+Provider's total aggregate liability under this agreement shall be capped at $2,000,000 USD or the total fees paid by Client in the preceding 12 months, whichever is lower. Neither party shall be liable for indirect, punitive, or consequential damages.

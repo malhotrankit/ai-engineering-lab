@@ -1,0 +1,22 @@
+
+APEX CLOUD PLATFORM TECHNICAL SUPPORT & API RATE LIMIT SPECIFICATION (v3.4)
+Document ID: TECH-SUP-2025-REVISION-A
+
+1. API RATE LIMITS & THROTTLING
+The Apex Cloud Platform enforces tiered rate limiting across all REST endpoints:
+- Developer Tier: 60 requests per minute per IP address. Burst limit: 10 requests per second.
+- Enterprise Tier: 5,000 requests per minute per tenant API key. Burst limit: 500 requests per second.
+Exceeding rate limits triggers an HTTP 429 Too Many Requests response with a Retry-After header.
+
+2. AUTHENTICATION & TOKEN EXPIRATION
+All API requests must pass a Bearer JSON Web Token (JWT) in the Authorization header.
+Tokens expire after exactly two (2) hours. Refresh tokens are valid for fourteen (14) days.
+Failed authentication returns HTTP 401 Unauthorized.
+
+3. TECHNICAL SUPPORT INCIDENT SEVERITY & SLA RESPONSE TIMES
+- Severity 1 (Critical Outage): Core API service down for all tenants. Target SLA Response Time: 15 minutes.
+- Severity 2 (Major Impairment): Key features degraded with no workaround. Target SLA Response Time: 1 hour.
+- Severity 3 (Minor Issue): General bugs or documentation inquiries. Target SLA Response Time: 24 hours.
+
+4. SYSTEM MAINTENANCE & LOG RETENTION
+Application access logs and audit trails are retained in cloud cold storage for three hundred sixty-five (365) days before permanent automated purging.

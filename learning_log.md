@@ -121,6 +121,19 @@ Not all companies provide future guidance in every report, making it optional, w
 3. **Why is an evidence quote useful but not automatically enough?**
    An evidence quote allows verification (so humans or automated systems can verify the claim against the source document). It is not enough on its own because the model might have fabricated the quote itself (hallucination) or selected a quote that doesn't actually support the extracted value.
 
-4. **Why must financial calculations remain deterministic Python code rather than LLM arithmetic?**
-   LLMs are next-token predictors and lack a reliable mathematical reasoning engine. They often make arithmetic errors, whereas deterministic Python code using exact precision types (like `Decimal`) guarantees 100% mathematical accuracy and reproducibility.
+
+## Session 5 — Date: 2026-07-27
+
+### Completed
+- Completed **Course 2 (RAG Applications)** of the Coursera AI Engineering Certificate.
+- Mastered full RAG pipeline implementations in both **LangChain** (`RetrievalQA`, LCEL, `stuff`) and **LlamaIndex** (`SimpleDirectoryReader`, `SentenceSplitter`, `VectorStoreIndex`, `QueryEngine`, `ChatEngine`).
+- Generated distilled, PDF cheat sheets for all Course 2 labs ([lab_2_cheatsheet.pdf](file:///Users/ankitmalhotra/Developer/ai-engineering-lab/coursera_notes/lab_2_cheatsheet.pdf), [lab_course2_mod1_cheatsheet.pdf](file:///Users/ankitmalhotra/Developer/ai-engineering-lab/coursera_notes/lab_course2_mod1_cheatsheet.pdf), [lab_course2_mod3_cheatsheet.pdf](file:///Users/ankitmalhotra/Developer/ai-engineering-lab/coursera_notes/lab_course2_mod3_cheatsheet.pdf)).
+- Generated annotated reference scripts for RAG and LlamaIndex ([rag_lab_explained.py](file:///Users/ankitmalhotra/Developer/ai-engineering-lab/coursera_notes/rag_lab_explained.py), [icebreaker_bot_explained.py](file:///Users/ankitmalhotra/Developer/ai-engineering-lab/coursera_notes/icebreaker_bot_explained.py)).
+- Established **Sequential Learning Workflow**: 100% course completion first, followed by scheduled project sprints (Sprint 1 after Course 7 for LangGraph Agent, Sprint 2 after Course 9 for FastAPI Microservice).
+
+### Key Concepts Mastered
+- **LangChain vs. LlamaIndex Design Philosophies:** LangChain is granular & modular; LlamaIndex is integrated & batteries-included.
+- **`query_engine.query()` vs. `chat_engine.chat()`:** `.query()` is stateless (single-shot lookups); `.chat()` is stateful (multi-turn memory).
+- **LlamaIndex Relationships:** Graph pointers stored directly in `TextNode.relationships`, enabling 1-database parent-child retrieval.
+
 
