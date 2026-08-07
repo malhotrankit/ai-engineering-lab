@@ -136,4 +136,15 @@ Not all companies provide future guidance in every report, making it optional, w
 - **`query_engine.query()` vs. `chat_engine.chat()`:** `.query()` is stateless (single-shot lookups); `.chat()` is stateful (multi-turn memory).
 - **LlamaIndex Relationships:** Graph pointers stored directly in `TextNode.relationships`, enabling 1-database parent-child retrieval.
 
+## Session 7 — Date: 2026-08-07
 
+### Completed
+- **Course 2 Revision Labs Completed:** Successfully completed the LangChain LCEL Challenge (`langchain_scratch_challenge.py`) and LlamaIndex Engine Challenge (`llamaindex_scratch_challenge.py`). Built a dual-framework reference (`dual_framework_rag_lab.py`).
+- **Agent Collaboration Safety:** Identified root cause of AI code overwriting. Established strict rules: AI must run `view_file` before edits, and must use `replace_file_content` for surgical updates rather than overwriting entire files (documented in `rca_code_loss_fix.md`).
+- **Security Audit & Hardening:** Stripped all hardcoded API keys (`AIzaSy...`, `sk-or-v1...`) from scripts. Implemented a robust `sys.exit()` guard ensuring keys are only loaded from the `.env` file.
+- **Git Repository Organization:** Secured `.gitignore` against accidental key leaks and excluded large binary vector DB folders (`chroma_db`, `llama_storage`). Created an `.env.example` file for safe collaboration.
+- **Master Notes Compiled:** Finalized formatting of `course_2_master_revision.md` and compiled the Executive Edition PDF.
+- **Git Push:** Successfully committed and pushed 31 files representing all of the Course 1 and Course 2 materials to the remote repository.
+
+### Next Step
+- **Course 6: AI Agents in LangGraph** — time to start building agents!

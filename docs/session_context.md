@@ -189,4 +189,14 @@ class EarningsExtraction(BaseModel):
 - Next step: Complete Course 1 & 2 PDF revision, then launch **Course 6: AI Agents**!
 
 
+## Session 7 — Date: 2026-08-07
 
+### Completed
+- **Course 2 Revision Labs Completed:** Implemented production-grade RAG patterns using both LangChain and LlamaIndex.
+- **Agent Collaboration Protocol:** RCA'd and fixed an issue with AI overwriting code by implementing a strict pre-edit inspection and `replace_file_content` rule, documented in `scratch/rca_code_loss_fix.md`.
+- **API Key Security Hardened:** Conducted a full git audit. Removed all hardcoded `AIzaSy` and `sk-or-v1` keys from scripts. Updated `.gitignore` to block all `.env` variants and binary database files (`chroma_db`, `llama_storage`). Created a safe `.env.example`.
+- **Master Notes Finalized:** Re-compiled `course_2_master_revision.md` into a high-quality PDF.
+- **Git Push:** Committed and safely pushed 31 files representing all of the Course 2 work to GitHub `origin/main` with 100% clean security.
+
+### Exact next step
+- Begin **Course 6: AI Agents in LangGraph**!
