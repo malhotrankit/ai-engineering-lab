@@ -1,126 +1,184 @@
-# Interview Questions: Professional Certificate in RAG and Agentic AI
+# AI Application Engineer Interview Bank
 
-This file contains interview-ready questions and answers based on the topics discussed during the Coursera course.
+Last curated: 8 August 2026
 
-## 1. Core AI Paradigms
-**Q: How does Retrieval Augmented Generation (RAG) improve upon traditional LLMs?**
-**A:** RAG enhances an AI's ability to provide accurate and context-aware responses by integrating real-time information retrieval from external data sources before generating an answer. This reduces hallucinations and ensures answers are grounded in factual, up-to-date data.
+Answers are deliberately concise. Practice a 30-second answer, then extend with the financial-document project and a failure/measurement.
 
-**Q: What is Multimodal AI and what are its key advantages?**
-**A:** Multimodal AI allows systems to process and integrate various types of data simultaneously, such as text, images, audio, and video. Its main advantage is enabling more dynamic, interactive, and human-like user experiences (e.g., cross-modal search or image captioning).
+## Project deep dive
 
-**Q: Describe the concept of "Agentic AI."**
-**A:** Agentic AI represents a shift from reactive models to systems equipped with the ability to reason, plan, and autonomously execute tasks over multiple steps, often by leveraging external tools and APIs.
+### 1. What have you actually built?
 
-## 2. Tools & Frameworks
-**Q: What is Langchain and how is it utilized in Generative AI applications?**
-**A:** Langchain is a framework designed to build applications powered by language models. It streamlines AI workflows by enabling structured and efficient prompt chaining, stateful workflows, and easy integration with external tools (Agents) and vector databases.
+I built a typed financial extraction prototype with Pydantic models, a direct Gemini structured-output call, fake malformed/fabricated scenarios, a verbatim evidence check, tests, and basic chunk/prompt utilities. Course labs cover LangChain/LlamaIndex RAG, but the main package does not yet have vector retrieval, FastAPI, agents, or deployment. I describe those as the measured roadmap, not completed features.
 
-**Q: In the context of RAG, what is the role of Vector Databases, and can you name a few?**
-**A:** Vector Databases store data as high-dimensional vectors (embeddings) to enable efficient similarity search. This is crucial for RAG, as it allows the system to quickly retrieve contextually relevant documents to append to a prompt. Examples include ChromaDB and FAISS.
+### 2. What is the most important limitation you discovered?
 
-**Q: How do tools like Langgraph and Crew AI contribute to Agentic architectures?**
-**A:** Tools like Langgraph and Crew AI facilitate stateful workflows and multi-agent orchestration. They provide design patterns for multi-agent system design (like ReAct agents), allowing multiple autonomous agents to collaborate, share context, and execute complex workflows systematically.
+A Pydantic-valid response can still be false. Even a quote that occurs in the source can be paired with the wrong metric, value, unit, company, or period. The next validation layer must check claim-to-evidence consistency and evaluate representative adversarial cases.
 
-**Q: What is Gradio and why is it useful in AI development?**
-**A:** Gradio is an open-source Python library used to quickly create customizable, web-based user interfaces for interacting with machine learning models and APIs, enabling rapid prototyping and demonstration of AI capabilities.
+### 3. How would you turn this prototype into job-ready evidence?
 
-## 3. High-Priority 2026 Production & System Design (Supplemental)
-**Q: How do you evaluate a RAG system, and what metrics are used?**
-**A:** RAG must be evaluated on both retrieval (did we find the right context?) and generation (did the LLM use the context correctly?). Frameworks like Ragas or TruLens are used. Common metrics include Context Precision, Context Recall (for retrieval), and Faithfulness / Answer Relevance (for generation). Using "LLM-as-a-judge" against a "Golden Dataset" of curated Q&A pairs is the industry standard.
+Add stable ingestion/provenance, measured retrieval, hybrid search/reranking only if it improves evals, citation support checks, a versioned eval set, FastAPI boundaries, reliability controls, traces, threat tests, and a Dockerized deployment. Publish before/after metrics and one diagnosed failure.
 
-**Q: How do you design an agentic system to prevent "runaway tool loops" and manage costs?**
-**A:** You must implement strict guardrails. This includes setting hard iteration caps (e.g., maximum 5 tool calls per turn), using cheaper/faster models for routing and reasoning, and implementing human-in-the-loop checkpoints for actions that mutate state or incur high costs. Observability tools like LangSmith are critical here to trace agent execution paths.
+### 4. Why did you use `Decimal` for financial values?
 
-**Q: In a production RAG system, when would you use Hybrid Search over standard Semantic (Dense) Search?**
-**A:** Standard semantic search struggles with exact keyword matches, acronyms, or specific IDs (like "Error 404"). Hybrid search combines dense vector embeddings (for semantic meaning) with sparse keyword search (like BM25). You use it when users are likely to search for both conceptual themes and exact part numbers or names.
+Binary floating-point can introduce representation/rounding errors. `Decimal` supports explicit decimal precision and rounding, which is more appropriate for financial values. The model should extract values; deterministic code should perform arithmetic and validation.
 
-**Q: What is "LLMOps" and why is observability crucial for Agentic AI?**
-**A:** LLMOps involves the deployment, monitoring, and maintenance of LLMs in production. Observability is crucial for agents because their execution paths are non-deterministic. Without tracing (seeing exactly which tools the agent called, what the prompt was, and what the external API returned), it is nearly impossible to debug why an agent hallucinated or failed a task.
+## LLM boundaries and prompting
 
-## 4. Agentic Architecture (2026 Focus)
-**Q: What is an "Agentic Loop" and how does it differ from a standard LLM chatbot?**
-**A:** An agentic loop is an iterative execution cycle where an AI operates autonomously to achieve a verifiable goal. Unlike a standard chatbot that just answers a single prompt and stops, an agentic loop continuously cycles through **Reasoning** (what to do next), **Acting** (calling external tools), and **Observing** (reviewing the tool's output) until the goal is met or it hits a termination condition.
+### 5. What does structured output solve?
 
-**Q: What are the biggest risks of implementing an Agentic Loop in production?**
-**A:** The biggest risks are infinite loops (getting stuck retrying a failed tool call) and "goal drift" (forgetting the original task while chasing sub-tasks). This can lead to massive token cost spikes. To mitigate this, engineers must build strict scaffolding: setting hard limits on iteration counts, implementing timeout conditions, and using human-in-the-loop checkpoints for critical actions.
+It reduces malformed-output handling by constraining response shape and types. It does not verify factuality, source support, authorization, or safety.
 
-## 5. Real-World Data & Tooling
-**Q: How do you handle extracting data from complex PDFs containing tables for a RAG system?**
-**A:** Standard semantic chunking (splitting by character count) breaks tables. To handle this, you must use vision-language models (VLMs) to process the PDF as an image, or specialized parsers (like Unstructured.io) to extract the HTML/Markdown structure of the table, ensuring the table remains intact as a single searchable chunk.
+### 6. Is temperature zero deterministic?
 
-**Q: Why is "Structured Output" critical for AI Agents, and how do you enforce it?**
-**A:** Agents must communicate with standard APIs and databases, which require strict JSON schemas. If an LLM outputs malformed JSON, the tool call fails. You enforce structured output by prompting the LLM to reply strictly in a specific JSON schema, often leveraging libraries like Pydantic in Python, or native API features like OpenAI's Structured Outputs.
+It usually reduces sampling variability, but it is not a universal reproducibility guarantee. Provider/model updates, infrastructure, floating-point effects, and tie-breaking can change output. Use evals and version tracking rather than relying on temperature.
 
-**Q: How do the core data abstractions differ between LangChain and LlamaIndex?**
-**A:** 
-- **Documents & Metadata:** Both frameworks wrap raw ingested text in a `Document` object with a `metadata` dictionary. However, LlamaIndex `Document` objects also natively track explicit parent/child/sibling relationships via a `relationships` dictionary.
-- **Chunks vs. Nodes:** LangChain calls chopped text segments "chunks" (stored as `Document` instances). LlamaIndex explicitly calls text chunks **`TextNode` (or `Node`)**, treating chunks as nodes in a graph that can maintain explicit pointers to parent documents or adjacent sibling nodes.
-- **Loaders:** LangChain uses individual specific loaders (e.g. `TextLoader`, `PyPDFLoader`), whereas LlamaIndex provides **`SimpleDirectoryReader`**, a unified universal directory loader that auto-detects and parses mixed file types (PDF, CSV, TXT, HTML, JSON) automatically.
+### 7. When would you use few-shot examples?
 
+When examples measurably clarify output structure, edge cases, or classification boundaries. They increase tokens and can bias behavior, so compare against a zero-shot baseline on representative cases.
 
-## 6. Model Optimization, Routing & RAG Strategies (Course 1 Core)
-**Q: In a system design interview, when should you recommend RAG vs. Fine-Tuning?**
-**A:** Use **RAG** for dynamic, frequently changing knowledge (facts, current data, company documents) because updating data requires zero model retraining. Use **Fine-Tuning** when you need to change the model's behavior, tone, style, or output syntax (e.g., teaching an LLM to speak in a specific domain dialect or output a custom code format). Rule of thumb: *RAG for knowledge; Fine-Tuning for style.*
+### 8. Prompting, long context, RAG, fine-tuning, or tools?
 
-**Q: How do you optimize an AI pipeline for minimum latency and minimum API cost?**
-**A:** Use the **"Start Big, Scale Small"** model routing strategy. Prototype your prompt on the largest, smartest model (e.g., GPT-4o or Claude 3.5 Sonnet) to establish your quality ceiling. Once the output is verified, evaluate the prompt on smaller, cheaper models (e.g., Llama-3-8B or GPT-4o-mini). Route simple tasks (classification, summarization) to small models, and reserve the large model only for complex agentic reasoning.
+Prompting supplies instructions; long context supplies a small request-scoped corpus; RAG selects from large/dynamic/private knowledge; fine-tuning changes learned behavior; tools query authoritative systems, compute, or act. Choose based on the missing capability and evaluate the simplest option.
 
-**Q: What is "Small-to-Big Retrieval" (ParentDocumentRetriever) and what problem does it solve?**
-**A:** It solves the trade-off between search precision and context size. Large chunks muddy vector math (ruining search precision), while tiny chunks lack enough context for the LLM to write a complete answer. Small-to-Big retrieval splits documents into tiny child chunks (for vector search) and maps them to larger parent chunks. The vector database matches the tiny chunk, but passes the large parent chunk to the LLM.
+## RAG system design
 
-**Q: What is Self-Consistency Prompting and how does it improve LLM accuracy?**
-**A:** Self-Consistency is an extension of Chain-of-Thought. Instead of taking the LLM's first answer, you sample $N$ independent reasoning paths for the same prompt, and take a majority vote on the final answer. This eliminates random reasoning glitches in math, logic, and multi-step tasks.
+### 9. Explain RAG end to end.
 
-**Q: What is a Mixture of Experts (MoE) model (e.g., Mixtral 8x7B) and why is it popular in enterprise AI?**
-**A:** Unlike dense models that activate 100% of their parameters for every word, an MoE model consists of multiple specialized sub-networks ("experts"). A router network activates only a small subset (e.g., 2 out of 8 experts) per token. This provides the intelligence of a massive 47B parameter model at the speed and cost of a 13B active parameter model.
+Offline: authorize sources, parse, normalize, deduplicate, chunk with provenance, embed, index, and verify. Online: authenticate, filter, retrieve, fuse/rerank if useful, budget context, generate/refuse, cite, validate support, and trace the request.
 
-## 7. Vector Operations & Distance Metrics (Course 2, Module 1)
-**Q: How do you choose between Cosine Similarity, Dot Product, and Euclidean (L2) Distance for vector search in RAG?**
-**A:** 
-- **Cosine Similarity** measures the *angle* between vectors regardless of magnitude. Use it when text chunk lengths vary significantly across your dataset.
-- **Dot Product** measures both *direction and magnitude*. It is computationally faster than cosine similarity, and mathematically equivalent to cosine similarity if all vectors are **L2-normalized** (unit magnitude).
-- **Euclidean (L2) Distance** measures geometric distance between vector endpoints. Smaller distance indicates higher similarity. Most modern vector databases (e.g., Pinecone, Chroma, Qdrant) use Cosine or L2 distance by default.
+### 10. A RAG answer is wrong. How do you debug it?
 
-**Q: What is the difference between Greedy Decoding and Sampling Decoding, and how does Temperature interact with them?**
-**A:** 
-- **Greedy Decoding** is a strategy where the LLM *always* picks the single highest-probability token. It is 100% deterministic, locks temperature to 0, and is ideal for factual RAG, data extraction, and code generation.
-- **Sampling Decoding** allows the LLM to randomly select from top probable tokens based on a probability distribution.
-- **Temperature** is the hyperparameter used *only* during Sampling Decoding to control the flattening of the probability curve. Low temperature (0.1–0.3) keeps responses focused and factual, while high temperature (0.8–1.5) increases randomness and creativity.
+Inspect the source parse, expected chunk, index/metadata, retrieved ranks/scores, access filters, context assembly, prompt/model output, and citation validation in order. Retrieval metrics distinguish a retrieval miss from a generation failure.
 
-**Q: In RAG architectures, what is the difference between `stuff` and `map_reduce` document combination strategies, and which one is used in production?**
-**A:** 
-- **`stuff`** takes all retrieved text chunks and concatenates them into a single string injected into the `{context}` parameter. It is used in **95%+ of production applications** because it only makes **1 API call**, resulting in fast responses (1-2s latency) and low cost. Modern large context windows (128k+ tokens) make this the standard choice.
-- **`map_reduce`** runs an individual LLM call for *each* chunk, then a final LLM call to synthesize the results. It is reserved for **offline batch processing** (e.g., overnight 500-page book summarization) because making 10+ sequential API calls creates high latency (15-30s) that ruins real-time user experiences.
+### 11. How do you choose chunk size and overlap?
 
-## 8. Production LLMOps, vLLM & Caching Strategies
-**Q: What is vLLM and how does PagedAttention improve self-hosted LLM serving?**
-**A:** `vLLM` is an open-source, high-throughput LLM serving framework for GPU clusters. Standard PyTorch serving wastes GPU memory because Key-Value (KV) cache memory is allocated statically and sequentially, leading to high memory fragmentation. `vLLM` introduces **PagedAttention**, which manages KV-cache memory in non-contiguous pages (similar to virtual memory in operating systems). This allows GPU memory to be shared dynamic across concurrent requests, boosting serving throughput by 2x to 4x and dramatically lowering latency.
+Start with document structure and an evaluation baseline. Compare configurations on retrieval recall/precision, answer/citation quality, latency, and cost. Overlap can preserve continuity but increases duplication and storage.
 
-**Q: How do Prompt Caching and Semantic Caching differ in production AI architectures?**
-**A:** 
-- **Prompt Caching (API Level):** Caches static system prompt prefixes or large static RAG context documents directly on LLM provider servers (e.g., Anthropic/OpenAI). Reusing the cached prefix cuts input token costs by 50–90% and reduces Time to First Token (TTFT).
-- **Semantic Caching (Application Level - e.g., Redis / GPTCache):** Stores past user queries and LLM answers in a vector cache. When a new query arrives, it checks if it is semantically identical ($>95\%$ vector similarity) to a past query. If matched, it returns the cached answer instantly with **0ms LLM latency and $0 API cost**.
+### 12. Dense versus sparse versus hybrid search?
 
-**Q: Are Document classes portable between LangChain and LlamaIndex? Can you just swap import statements?**
-**A:** No, swapping import statements throws an `AttributeError` because LangChain uses `doc.page_content` while LlamaIndex uses `doc.text`. However, both frameworks provide official 1-line converters: `llama_doc.to_langchain_format()` and `LlamaDocument.from_langchain_format(langchain_doc)`.
+Dense retrieval captures semantic similarity. Sparse/BM25 captures exact terms, identifiers, rare names, and figures. Hybrid retrieval combines both; financial/technical corpora often benefit, but the improvement should be measured.
 
-**Q: What is the primary design philosophy difference between LangChain and LlamaIndex?**
-**A:** 
-- **LangChain** is built on a **Modular & Granular** design philosophy. It provides un-opinionated building blocks (prompt templates, output parsers, discrete document loaders) that engineers manually chain together. It offers max flexibility but requires heavy boilerplate and external third-party imports.
-- **LlamaIndex** is built on an **Integrated & Batteries-Included** design philosophy. It provides high-level abstractions out of the box (`SimpleDirectoryReader`, `VectorStoreIndex`, `QueryEngine`) that combine ingestion, embedding, vector storage, retrieval, and LLM querying into single-line commands.
+### 13. What does a reranker do?
 
-**Q: What is the difference between Embedding text into vectors and Indexing vectors into a database?**
-**A:** 
-- **Embedding** is a *model operation*: it passes raw text through a neural network (e.g. `text-embedding-3-small`) to convert words into a high-dimensional array of numbers (`[0.012, -0.043, ...]`).
-- **Indexing** is a *database operation*: it takes those numerical vector arrays and organizes them inside a Vector DB (ChromaDB, Pinecone) using search algorithms like HNSW (Hierarchical Navigable Small World) so you can query millions of vectors in sub-milliseconds.
+It jointly scores a query and each candidate, often improving final ordering beyond independent embeddings. It adds latency/cost, so compare retrieval and answer metrics before and after.
 
+### 14. Explain recall@k and MRR.
 
+Recall@k asks whether relevant evidence appears in the first k results. Mean reciprocal rank rewards placing the first relevant result earlier. Neither proves the generator used the evidence correctly.
 
+### 15. What is faithfulness?
 
+Whether answer claims are supported by the supplied context. It is separate from answer relevance and correctness: an answer can be relevant yet unsupported, or faithful to context that is itself wrong.
 
+### 16. Why are returned source documents not enough?
 
+They show what retrieval selected, not which claim they support. The model may ignore them or make an unsupported statement. Use stable citations and claim-to-span support checks.
 
+### 17. How do metadata filters affect security?
 
+They enforce tenant, user, document, region, or time scope before candidates reach the model. A missing/incorrect filter can leak data even if the final answer prompt says not to.
 
+### 18. When would you use long context instead of RAG?
+
+When the authorized corpus is small, fits comfortably within the context/token budget, and retrieval infrastructure adds more complexity than value. Evaluate cost, latency, and lost-in-the-middle behavior.
+
+## Evaluation
+
+### 19. How would you build a RAG eval set?
+
+Version questions, expected claims/answers, relevant source IDs, expected refusals, and tags. Include happy paths, conflicts, missing facts, exact IDs, units/periods, injection, duplicates, access filters, and provider failures.
+
+### 20. Which metrics belong in a release gate?
+
+Retrieval recall/precision, answer/citation correctness, refusal accuracy, schema/tool success, safety cases, latency percentiles, error rate, and cost. Choose thresholds from use-case risk and prevent unacceptable regressions rather than chasing one aggregate score.
+
+### 21. What are LLM-as-judge limitations?
+
+Bias, variance, prompt sensitivity, position/style preference, self-preference, and model-version drift. Calibrate against human labels, use clear rubrics/multiple checks where appropriate, and retain deterministic graders for exact facts.
+
+### 22. How do evals differ from production monitoring?
+
+Offline evals compare controlled, labeled cases before release. Production monitoring detects real distribution, latency, cost, safety, and operational failures. Production samples can become reviewed future eval cases.
+
+## FastAPI and reliability
+
+### 23. How would you structure the service?
+
+Thin typed FastAPI handlers call domain services; provider/storage/retrieval adapters sit behind interfaces. Long ingestion runs outside the request path. Tests mock network providers and integration tests cover boundaries.
+
+### 24. When does async help?
+
+For concurrent I/O such as model/database calls when libraries are async and concurrency is bounded. It does not make CPU-bound parsing faster; use workers/processes or background jobs for that.
+
+### 25. How do you handle model-provider failures?
+
+Explicit timeouts, bounded retries with backoff/jitter only for retryable errors, concurrency/rate limits, cancellation, error mapping, fallbacks where justified, and observability. Avoid retrying non-idempotent actions without idempotency controls.
+
+### 26. When would you stream responses?
+
+When lower perceived latency is valuable. Streaming complicates validation, moderation, error semantics, cancellation, tracing, and clients, so do not make it the default without a product reason.
+
+### 27. Why background ingestion?
+
+Parsing, embedding, and indexing can exceed request timeouts and need retries/resume. Return a job ID, make ingestion idempotent, persist status, bound the queue, and expose progress/failure.
+
+## Tools, agents, LangGraph, and MCP
+
+### 28. Chain, workflow, or agent?
+
+A chain has fixed composition; a workflow has application-controlled state/branches; an agent lets the model dynamically choose constrained actions. Prefer the least dynamic design that meets the requirement.
+
+### 29. How do you make tool calls safe?
+
+Authenticate/authorize outside the model, validate typed arguments, enforce allowlists/resource scope, limit time/steps/tokens, handle retries/idempotency, sanitize outputs, audit calls, and require approval for consequential actions.
+
+### 30. How do you stop runaway agents?
+
+Define terminal states and budgets for iterations, time, tokens, and tool calls. Add cancellation, repeated-action detection, failure routes, checkpoints/approval where useful, and regression tests for loops.
+
+### 31. When is LangGraph justified?
+
+When explicit state, branching, cycles, checkpointing, recovery, or human interrupts improve control. Compare with direct Python; do not add a graph to a simple fixed pipeline.
+
+### 32. What does MCP provide?
+
+It standardizes discovery and invocation of tools/resources/prompts across hosts and servers. It does not automatically provide trust, least privilege, authorization, or prompt-injection protection.
+
+### 33. Name MCP security concerns.
+
+Token theft/passthrough, confused-deputy attacks, malicious metadata, excessive scopes, local-server compromise, SSRF, exfiltration, and indirect prompt injection. Use least privilege, consent, audience validation, secure token handling, and application-side policy.
+
+## Observability, security, and operations
+
+### 34. What would you trace?
+
+Correlated spans for request handling, retrieval, reranking, model and tool calls, validation, and storage. Record safe identifiers, timings, status, model/token/cost data, ranks, retries, and denied actions without leaking secrets or sensitive content.
+
+### 35. How do you defend against indirect prompt injection?
+
+Treat retrieved/tool content as untrusted, delimit it, prevent it from changing system policy, keep authorization outside the model, minimize tools/scopes, require approval for side effects, validate outputs, and maintain adversarial evals. No single prompt solves it.
+
+### 36. What are the biggest RAG/agent cost controls?
+
+Context budgets, retrieval/reranking limits, model selection based on evals, concurrency/rate limits, bounded retries and agent steps, batch/background work, measured caching, and per-request/tenant budgets with alerts.
+
+### 37. What can go wrong with semantic caching?
+
+False semantic matches, stale answers, cross-tenant leakage, ignored authorization/context, and hard invalidation. Use tenant-aware keys, TTL/versioning, conservative thresholds, sensitive/dynamic-query bypasses, and evaluation.
+
+### 38. What is the value of NIST/OWASP guidance?
+
+They provide structured risk categories and control prompts for governance, measurement, security, privacy, and operations. Map relevant threats to controls/tests/owners rather than treating a checklist as proof of safety.
+
+### 39. What should a production-ready README prove?
+
+Exact implemented status, architecture/data flow, reproducible setup, API examples, tests/eval methodology and results, security boundaries, observability, deployment, cost assumptions, known limitations, and roadmap.
+
+### 40. What makes this portfolio credible to a hiring manager?
+
+One deployed system with honest scope, measured retrieval/generation quality, safe boundaries, failure handling, tests/traces, and a clear design narrative is stronger than many unmeasured framework demos.
+
+## System-design prompt
+
+Design a multi-tenant earnings-document assistant. Cover ingestion, provenance, access controls, parsing, hybrid retrieval, reranking, citations/refusal, evaluation, tool authorization, FastAPI/background work, storage, observability, deployment, cost, threat model, rollout, and incident response. State assumptions and defend every added component.
 

@@ -1,202 +1,106 @@
-# AI Engineering Learning Context
+# AI Engineering Session Context
 
-## Learning plan
+Last reconciled: 8 August 2026
 
-- Reference: `AI_Application_Engineering_16_Week_Plan.pdf`
-- Current phase: Week 0–1 — Production Python baseline
-- Current status: completed, pending GitHub Actions verification
-- Goal: establish reproducible Python development practices before using LLM APIs
+## Current source of truth
 
-## Completed
+- Calendar: Week 4 of the 16-week plan (7-13 August 2026).
+- Coursera: Courses 1 and 2 complete. Course 3 is in progress. Courses 4 and 6 have not started.
+- Strategy: fully sequential focus blocks. Complete Course 3 only, then pause Coursera for a dedicated retrieval sprint in the existing project.
+- Portfolio status: learning prototype, not production-ready.
+- Exact current goal: complete Course 3. No project work or other course work during this block.
+- Exact next action: begin the Course 3 module on vector databases and Chroma architecture.
+- Exact project return point: immediately after Course 3, run Project Sprint A for environment repair, chunking, embeddings, vector retrieval, and the first retrieval evaluation set.
 
-- Created the `ai-engineering-lab` project directory and initialized Git
-- Created and activated a Python virtual environment
-- Installed Pydantic, pytest, and Ruff
-- Created the initial project structure
-- Added `.gitignore`
-- Created a full Pydantic `Document` model
-- Added custom validators for meaningful text and valid HTTP/HTTPS source URLs
-- Added unit tests, including whitespace trimming
-- Ran pytest successfully: 6 tests passed
-- Ran Ruff successfully: lint checks passed and all files are formatted
-- Created the first Git commit:
-  - `chore: set up Python project baseline`
-- Added a GitHub Actions workflow:
-  - `ci: add Python quality checks`
-- Created and connected the GitHub repository:
-  - `https://github.com/malhotrankit/ai-engineering-lab`
-- Configured `main` to track `origin/main`
+## What is actually implemented
 
-## Current model
+### Main package
 
-```python
-from typing import Any
-from urllib.parse import urlparse
+- Pydantic `Document`, `FinancialMetric`, and `EarningsExtraction` models.
+- Validators for required text, URLs, optional guidance, and risk cleanup.
+- Fake extraction scenarios for valid, malformed, and fabricated evidence.
+- A substring-based `verify_evidence` check.
+- Direct Gemini structured output using a Pydantic response schema.
+- A basic paragraph splitter and augmented prompt builder.
+- Unit tests for models, fake extraction, and current RAG utilities.
+- Ruff/pytest CI configuration.
 
-from pydantic import BaseModel, Field, field_validator
+### Course/revision artifacts
 
+- Courses 1 and 2 completed; Course 3 started on 8 August 2026.
+- Learner-provided ten-course Coursera curriculum captured in `coursera_notes/certificate_curriculum.md` with exact titles, durations, and advertised learning outcomes.
+- LangChain and LlamaIndex practice scripts and cheat sheets.
+- Course 2 scratch challenges and dual-framework reference code.
+- Course 6 has not started.
 
-class Document(BaseModel):
-    title: str = Field(min_length=1, max_length=300)
-    content: str = Field(min_length=1)
-    page_number: int = Field(ge=1)
-    source_url: str | None = None
-    metadata: dict[str, Any] = Field(default_factory=dict)
+### Repository credential safety
 
-    @field_validator("title", "content")
-    @classmethod
-    def strip_required_text(cls, value: str) -> str:
-        cleaned = value.strip()
-        if not cleaned:
-            raise ValueError("must not be blank")
-        return cleaned
+- Real API keys remain in ignored local `.env` files; `.env` and `coursera_notes/.env` are not tracked.
+- `scripts/check_secrets.py` scans tracked and unignored files without printing suspected values.
+- Repository pre-commit and pre-push hooks run the scanner through `.githooks`.
+- GitHub Actions runs the same scan before dependency installation, linting, and tests.
+- `AGENTS.md` requires every future practice lab, commit, and push to use environment variables and pass the secret scan.
 
-    @field_validator("source_url")
-    @classmethod
-    def validate_source_url(cls, value: str | None) -> str | None:
-        if value is None:
-            return value
+## What is not yet implemented
 
-        parsed = urlparse(value)
-        if parsed.scheme not in {"http", "https"} or not parsed.netloc:
-            raise ValueError("must be a valid HTTP or HTTPS URL")
-        return value
-```
+- No embedding model or vector index in the main package.
+- No real query-time retrieval, hybrid search, reranking, or citation pipeline in `src/`.
+- No versioned evaluation dataset or automated retrieval/generation metrics.
+- No FastAPI service, background ingestion, Postgres/pgvector, or Redis integration.
+- No model-provider abstraction, systematic timeouts/retries, or concurrency controls.
+- No LangGraph state machine, production agent loop, or MCP server/client.
+- No application traces/metrics, threat model, red-team suite, Docker release, or cloud deployment.
 
-```python
-from decimal import Decimal
-from pydantic import BaseModel, Field, field_validator
+## Known limitations to fix first
 
-class FinancialMetric(BaseModel):
-    name: str = Field(min_length=1, max_length=100)
-    value: Decimal
-    unit: str = Field(min_length=1, max_length=50)
-    evidence: str = Field(min_length=1)
+1. `split_document` accepts `chunk_overlap` but does not use it, and a long paragraph can exceed `chunk_size`.
+2. `verify_evidence` proves only verbatim presence. It can still accept a quote that does not support the claimed value, unit, period, or company.
+3. The direct model call is coupled to Gemini and currently lacks explicit timeout/retry/error mapping.
+4. Course RAG scripts demonstrate frameworks, but they do not make the main application a RAG system.
+5. Setup and dependency claims must be revalidated from a clean environment before the README promises reproducibility. During the 8 August audit, `.venv/bin/pytest` was absent and the bundled document runtime did not include pytest, so the application suite could not be rerun in this session.
 
-    @field_validator("name", "unit", "evidence")
-    @classmethod
-    def strip_required_text(cls, value: str) -> str:
-        cleaned = value.strip()
-        if not cleaned:
-            raise ValueError("must not be blank")
-        return cleaned
+## Immediate sequence
 
-class EarningsExtraction(BaseModel):
-    company: str = Field(min_length=1, max_length=200)
-    reporting_period: str = Field(min_length=1, max_length=100)
-    metrics: list[FinancialMetric] = Field(min_length=1)
-    guidance: str | None = None
-    risks: list[str] = Field(default_factory=list)
+### Current block - Course 3 only
 
-    @field_validator("company", "reporting_period")
-    @classmethod
-    def strip_required_text(cls, value: str) -> str:
-        cleaned = value.strip()
-        if not cleaned:
-            raise ValueError("must not be blank")
-        return cleaned
+- Complete Course 3 without simultaneous project or Course 6 work.
+- Track module completion when the learner reports it.
 
-    @field_validator("guidance")
-    @classmethod
-    def strip_optional_text(cls, value: str | None) -> str | None:
-        if value is None:
-            return None
-        cleaned = value.strip()
-        return cleaned or None
+### Next block - Project Sprint A: retrieval foundation
 
-    @field_validator("risks")
-    @classmethod
-    def clean_risks(cls, values: list[str]) -> list[str]:
-        return [risk.strip() for risk in values if risk.strip()]
-```
+- Pause Coursera.
+- Reproduce install/test/lint from a clean environment.
+- Repair and test chunk-size/overlap behavior.
+- Implement stable IDs, metadata, embeddings, persistent vector search, and ranked retrieval in the main package.
+- Create 15 retrieval and 10 extraction cases, including refusals and adversarial inputs.
 
-## Session 3 — Date: 2026-07-16
+### Following blocks
 
-### Completed
+- Complete Course 4 only.
+- Pause Coursera for Project Sprint B: hybrid retrieval, reranking, citations, and grounded-answer evaluation.
+- Complete a service/reliability sprint.
+- Start Course 6 only after those foundations.
+- Use LangGraph only where explicit state/recovery/approval benefits are demonstrated.
+- Add MCP with least privilege and security tests.
 
-- Implemented a clean, simple, keyword-based fake extractor in `src/ai_engineering_lab/fake_extractor.py` to simulate LLM structured JSON outputs.
-- Developed scenario-based mock responses for:
-  - Valid and grounded data.
-  - Malformed data (missing required schema fields).
-  - Ungrounded data (valid schema structure but fabricated/hallucinated evidence text).
-- Implemented a deterministic evidence grounding checker `verify_evidence` that ensures metric evidence quotes exist as substrings within the source text.
-- Added comprehensive unit tests in `tests/test_fake_extractor.py` covering all three cases.
-- Confirmed that all 15 tests pass successfully.
-- Ran Ruff formatting and checks, ensuring clean code hygiene.
+## Durable mental models
 
-### Commands and outcomes
+- A schema proves shape and types, not truth.
+- Retrieval makes relevant context available; it does not force the model to use it correctly.
+- A citation is useful only if it is stable, accessible, and actually supports the answer.
+- Evaluate retrieval and generation separately before tuning the whole pipeline.
+- The model proposes actions; application code validates authorization and executes them.
+- Prefer a deterministic workflow when the steps are known.
+- Evals, traces, and failure handling turn a demo into credible engineering evidence.
 
-- `PYTHONPATH=src .venv/bin/pytest` → 15 passed
-- `.venv/bin/ruff check .` → All checks passed!
-- `.venv/bin/ruff format .` → 1 file reformatted, 5 left unchanged
+## Session history
 
-### Concepts understood / questions remaining
-
-- Understood that schema validation only guarantees structure and type safety, not factual accuracy or grounding.
-- Understood that evidence quotes are crucial for RAG validation but must be programmatically verified against the raw text.
-- Understood that LLMs should not perform mathematical/financial operations; arithmetic must be handled by deterministic code (using `Decimal`).
-
-### Files created or changed
-
-- `src/ai_engineering_lab/fake_extractor.py` (modified)
-- `tests/test_fake_extractor.py` (created)
-- `learning_log.md` (modified)
-- `docs/session_context.md` (modified)
-
-### Exact next step
-
-- Transition to making live LLM API calls with structured outputs, integrating the Pydantic schemas and grounding validation.
-
-
-## Session 4 — Date: 2026-07-17
-
-### Completed
-
-- Built `src/ai_engineering_lab/live_extractor.py` to integrate the live Gemini API using the `google-genai` SDK.
-- Enforced structured output natively using the `response_schema` configuration.
-- Securely stored the API key using `python-dotenv` and a `.gitignore` validated `.env` file.
-- Executed `run_live_test.py` to verify the pipeline from raw text -> LLM -> Pydantic object works end-to-end.
-
-### Commands and outcomes
-
-- `pip install google-genai python-dotenv` → SDK installed.
-- `pip freeze > requirements.txt` → Dependencies updated.
-- `PYTHONPATH=src python run_live_test.py` → Successfully parsed complex financial metrics out of raw text into Python objects.
-
-### Concepts understood / questions remaining
-
-- The live API enforces structure perfectly, but grounding validation must still occur post-API call to catch structured hallucinations.
-
-### Files created or changed
-
-- `.env` (created locally)
-- `requirements.txt` (modified)
-- `src/ai_engineering_lab/live_extractor.py` (created)
-- `run_live_test.py` (created)
-- `learning_log.md` (modified)
-- `docs/session_context.md` (modified)
-
-### Exact next step
-
-- **PAUSED:** The learner is currently focusing 100% on completing Coursera theory and lab modules (Course 2 completed ➔ Course 6 AI Agents in progress) to eliminate context switching.
-- **UPON RETURN (Scheduled Sprint 1 after Course 7):** Build `src/ai_engineering_lab/agent.py` — turning the financial extractor into a full Autonomous LangGraph Agent with tools and RAG document search!
-
-## Session 6 — Date: 2026-08-05
-
-### Completed
-- Learner returned after a 1-week break.
-- Conducted revision roadmap setup for Course 1 & Course 2 refresh.
-- Next step: Complete Course 1 & 2 PDF revision, then launch **Course 6: AI Agents**!
-
-
-## Session 7 — Date: 2026-08-07
-
-### Completed
-- **Course 2 Revision Labs Completed:** Implemented production-grade RAG patterns using both LangChain and LlamaIndex.
-- **Agent Collaboration Protocol:** RCA'd and fixed an issue with AI overwriting code by implementing a strict pre-edit inspection and `replace_file_content` rule, documented in `scratch/rca_code_loss_fix.md`.
-- **API Key Security Hardened:** Conducted a full git audit. Removed all hardcoded `AIzaSy` and `sk-or-v1` keys from scripts. Updated `.gitignore` to block all `.env` variants and binary database files (`chroma_db`, `llama_storage`). Created a safe `.env.example`.
-- **Master Notes Finalized:** Re-compiled `course_2_master_revision.md` into a high-quality PDF.
-- **Git Push:** Committed and safely pushed 31 files representing all of the Course 2 work to GitHub `origin/main` with 100% clean security.
-
-### Exact next step
-- Begin **Course 6: AI Agents in LangGraph**!
+- 12 July: Python/Pydantic baseline, tests, formatting, and CI foundations.
+- 16 July: fake extraction scenarios, schema failure tests, and evidence-substring validation.
+- 17 July: live Gemini structured extraction and environment-variable key handling.
+- 27 July: Course 2 completed; LangChain/LlamaIndex course labs and notes added.
+- 5 August: Course 1-2 revision resumed after a one-week break.
+- 7 August: Course 2 revision challenges completed; key audit and Git hygiene improved; master notes compiled.
+- 8 August: full curriculum/repository/job-readiness audit completed. Plan reordered around the current Week 4 checkpoint; notes corrected to remove unsupported production claims.
+- 8 August correction: Course 6 had not started. The learner confirmed a strict sequential preference: one complete course block, followed by one dedicated project sprint, never both simultaneously.
+- 8 August: Course 3 started as the sole active learning block; the first focus is vector databases and Chroma architecture.

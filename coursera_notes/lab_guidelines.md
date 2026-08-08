@@ -1,38 +1,59 @@
-# Course & Lab Execution Guidelines (Antigravity Study Rules)
+# Course and Lab Execution Guidelines
 
-These are the strict operating rules for how the AI assistant and user collaborate on Coursera courses and labs.
+Last revised: 8 August 2026
 
-## 0. Mandatory Rule 0: Autonomous Silent Updates
-- **Rule 0:** Automatically update `notes.md`, `interview_questions.md`, `progress.md`, `learning_log.md`, and `session_context.md` on **every single turn** as new concepts are introduced, WITHOUT waiting to be asked or reminded.
-- **Interview Q&A PDF Auto-Generation:** Whenever `interview_questions.md` is updated or modified, automatically re-compile `coursera_notes/interview_questions_master.pdf` using `.venv/bin/python scratch/generate_interview_questions_pdf.py` and overwrite/remove any old versions!
+## Purpose
 
-## 1. The "Struggle vs. Skip" Lab Framework
-Target Deadline: **July 31st** | Goal: **Interview-Ready Knowledge & Portfolio Project**
+Use Coursera to acquire concepts and the main `ai-engineering-lab` package to prove them. Course completion is not a substitute for implementation, evaluation, or a defensible architecture decision.
 
-- **🧠 STRUGGLE (Must Do):** Exercises that build critical interview-ready concepts (e.g., RAG pipelines, Recursive Text Splitters, Vector Search, ReAct Agents, ParentDocumentRetriever, Pydantic Structured Outputs). The AI assistant must NOT dump solutions—let the user solve `##TODO` blocks and debug.
-- **👀 SKIM:** Exercises showing code evolution (e.g., SequentialChain vs LCEL) or alternative implementations. Read for context, but do not spend time typing out boilerplate.
-- **🚫 SKIP:** Basic filler exercises (e.g., model temperature tweaks, basic prompt variations, basic Flask endpoints, legacy memory classes). Skip to save time.
+## Source-of-truth rule
 
----
+At the end of a meaningful study or build session, update only the records affected by the work:
 
-## 2. Lab Assistance Protocol
-1. **Analyze First:** When a lab document is provided, immediately categorize all exercises into **SKIP**, **SKIM**, or **STRUGGLE**.
-2. **No Solution Dumping:** Do NOT auto-generate solution files for labs unless explicitly requested. Guide the user through doc lookups and debugging.
-3. **"No-Scrolling" Cheat Sheets:** Create condensed Markdown/PDF artifacts for complex labs so the user doesn't have to scroll through Coursera's long Jupyter notebooks.
+- `coursera_notes/progress.md` for course and milestone status.
+- `learning_log.md` for concepts learned, decisions, failures, and evidence.
+- `docs/session_context.md` for the current checkpoint and exact next action.
+- A master note or interview file only when new material is genuinely useful.
 
----
+Do not edit five files on every conversational turn. Do not regenerate a PDF unless its Markdown source changed. PDF generation is handled by `scripts/generate_learning_pdfs.py`.
 
-## 3. Tech Stack & Architectural Rules
-- **Backend Background:** The user is a Senior Java / Spring Boot developer transitioning to AI.
-- **Python AI Stack:** LangChain, LangGraph, Pydantic, Gemini API, ChromaDB.
-- **Production API Framework:** Use **FastAPI** (not Flask) for building production AI REST microservices.
-- **Enterprise Pattern:** Hybrid Microservice Architecture (Spring Boot Backend ➔ FastAPI / LangGraph Python AI Agent).
+## Struggle, skim, skip
 
----
+### Struggle - implement and explain
 
-## 4. Sequential Learning & Project Workflow
-- **Workflow Rule:** Sequential, NOT parallel. The user will focus 100% on completing the Coursera courses (Course 2 ➔ Course 6 ➔ Course 7 ➔ Course 9) FIRST to prevent context switching.
-- **Project Phase:** The `ai-engineering-lab` project codebase will be built in dedicated coding sprints AFTER course milestones are completed.
-- **Workspace:** `/Users/ankitmalhotra/Developer/ai-engineering-lab/`
-- **Active Project:** Financial Data / Earnings Call Extractor (Pydantic + RAG + LangGraph + FastAPI).
+Use for skills that employers test and the project needs: Python typing/async, Pydantic boundaries, retrieval, chunking, metadata, hybrid search, reranking, evaluation, FastAPI, retries/timeouts, safe tool calls, LangGraph state, MCP security, observability, and Docker deployment.
 
+The learner should write the key logic, predict failure cases, and explain trade-offs. Assistance should guide and review rather than dump a complete lab solution unless explicitly requested.
+
+### Skim - understand the trade-off
+
+Use for alternate frameworks, UI-only demos, legacy APIs, or features that broaden awareness but do not improve the portfolio. Record the abstraction and one use case; do not reproduce boilerplate.
+
+### Skip - low job value now
+
+Skip repetitive prompt variations, deprecated memory/chain syntax, duplicate multi-agent demos, and provider-specific UI work that does not support a target job.
+
+## Strict sequential workflow
+
+1. Complete one course block with no project work.
+2. Pause Coursera completely.
+3. Complete the matching project sprint with no course work.
+4. Record the verified result and exact next block.
+5. Start the next course only when the project sprint is complete.
+
+Do not alternate course and project work by day or combine them in one week. The learner has explicitly rejected parallel or hybrid study workflows.
+
+## Architecture rules
+
+- Treat the repository as a learning prototype until real retrieval, evaluation, service reliability, observability, security controls, and deployment evidence exist.
+- Prefer direct Python for known workflows; add LangGraph when state, branching, recovery, or approvals provide clear value.
+- Pydantic validates structure, not factual support or authorization.
+- Retrieved documents are candidate evidence, not proof of a correct answer.
+- The application, not the model, authorizes and executes tools.
+- Use FastAPI for the Python service boundary; a Java/Spring service may consume it later, but is not required for the first portfolio release.
+- Introduce Postgres/pgvector as the durable store. Add Redis only for a demonstrated job-state, rate-limit, or cache requirement.
+- Prefer one well-evaluated system over multiple shallow framework demos.
+
+## Current order
+
+Complete Course 3 only. Then pause Coursera for the financial-project retrieval sprint. Complete Course 4 only, then pause for the advanced-RAG/evaluation sprint. Complete a service sprint before starting Course 6. Courses 5 and 8 remain optional unless a target job makes them relevant.
