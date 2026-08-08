@@ -129,7 +129,7 @@ Not all companies provide future guidance in every report, making it optional, w
 - Mastered full RAG pipeline implementations in both **LangChain** (`RetrievalQA`, LCEL, `stuff`) and **LlamaIndex** (`SimpleDirectoryReader`, `SentenceSplitter`, `VectorStoreIndex`, `QueryEngine`, `ChatEngine`).
 - Generated distilled, PDF cheat sheets for all Course 2 labs ([lab_2_cheatsheet.pdf](file:///Users/ankitmalhotra/Developer/ai-engineering-lab/coursera_notes/lab_2_cheatsheet.pdf), [lab_course2_mod1_cheatsheet.pdf](file:///Users/ankitmalhotra/Developer/ai-engineering-lab/coursera_notes/lab_course2_mod1_cheatsheet.pdf), [lab_course2_mod3_cheatsheet.pdf](file:///Users/ankitmalhotra/Developer/ai-engineering-lab/coursera_notes/lab_course2_mod3_cheatsheet.pdf)).
 - Generated annotated reference scripts for RAG and LlamaIndex ([rag_lab_explained.py](file:///Users/ankitmalhotra/Developer/ai-engineering-lab/coursera_notes/rag_lab_explained.py), [icebreaker_bot_explained.py](file:///Users/ankitmalhotra/Developer/ai-engineering-lab/coursera_notes/icebreaker_bot_explained.py)).
-- Established **Sequential Learning Workflow**: 100% course completion first, followed by scheduled project sprints (Sprint 1 after Course 7 for LangGraph Agent, Sprint 2 after Course 9 for FastAPI Microservice).
+- Historical decision (superseded on 8 August): complete courses first, then use project sprints. The current rule pairs one course topic with one matching portfolio proof each week.
 
 ### Key Concepts Mastered
 - **LangChain vs. LlamaIndex Design Philosophies:** LangChain is granular & modular; LlamaIndex is integrated & batteries-included.
@@ -147,4 +147,74 @@ Not all companies provide future guidance in every report, making it optional, w
 - **Git Push:** Successfully committed and pushed 31 files representing all of the Course 1 and Course 2 materials to the remote repository.
 
 ### Next Step
-- **Course 6: AI Agents in LangGraph** — time to start building agents!
+- Historical next step (superseded on 8 August): start Course 6. The learner later clarified that Course 6 had not started; the current focus is Course 3 only.
+
+## Session 8 - Date: 2026-08-08
+
+### Completed
+
+- Audited the entire repository, progress records, revision PDFs, project implementation, dependency surface, and original 16-week plan against current AI application engineering expectations.
+- Initially recorded Course 6 as started; this was corrected later the same day. Courses 1-2 are complete, while Courses 3, 4, and 6 have not started.
+- Reordered the remaining plan around the missing retrieval foundation before agent work.
+- Replaced the “courses first, project later” rule with one weekly course topic plus one matching portfolio proof to reduce context switching while retaining hands-on progress.
+- Corrected master notes that overstated determinism, grounding, production adoption percentages, caching latency/savings, self-consistency, and framework capabilities.
+- Reframed the repository and README honestly as a learning/portfolio prototype.
+- Attempted to rerun the project tests. The checkout had no `.venv/bin/pytest`, and the bundled document runtime also lacked pytest; restoring and validating the development environment is therefore the first Week 4 engineering task.
+
+### Industry-aligned decisions
+
+- Evaluation begins with the first retrieval baseline, not at the end of the plan.
+- Retrieval and generation will be measured separately.
+- FastAPI/reliability/observability precede complex agents.
+- Direct Python workflows precede LangGraph; agents are added only when dynamic routing/state provides value.
+- Tool authorization remains in application code, with explicit budgets and auditability.
+- MCP work includes least privilege and denied-case security tests.
+- Deployment evidence includes threat modeling, current NIST/OWASP guidance, OpenTelemetry-compatible traces, and EU AI Act awareness.
+
+### Exact next step
+
+Superseded later on 8 August: the learner clarified that Course 6 had not started and requested fully sequential work blocks.
+
+## Session 9 - Date: 2026-08-08
+
+### Progress correction and working preference
+
+- Confirmed that Course 6 has not started; the learner was only about to begin it.
+- Confirmed that course study and project implementation must never be scheduled simultaneously.
+- Adopted the exclusive block sequence: complete one course, pause Coursera, complete its project sprint, then begin the next course.
+- Set the current single goal to Course 3 only.
+- Set the existing financial earnings project to resume immediately after Course 3 in a dedicated retrieval sprint.
+- Added root-level project instructions so future Codex tasks read and maintain the same progress files automatically after meaningful milestones.
+
+### Exact next step
+
+Complete Course 3. Do not work on the project or Course 6 during this block.
+
+## Session 10 - Date: 2026-08-08
+
+### Course 3 started
+
+- Started Course 3, Vector Databases for RAG, as the sole active learning block.
+- Kept the financial-project retrieval sprint and all other courses paused in accordance with the sequential-work rule.
+- Set the first focus to the module on vector databases and Chroma architecture.
+
+### Exact next step
+
+Begin the Course 3 module on vector databases and Chroma architecture.
+
+## Curriculum reference - Date: 2026-08-08
+
+- Reviewed the learner-provided Coursera certificate curriculum covering all ten courses.
+- Recorded exact course titles, durations, and advertised learning outcomes in `coursera_notes/certificate_curriculum.md`.
+- Confirmed Course 3 is a nine-hour course covering vector/traditional database differences, ChromaDB operations, similarity search, recommendation systems, and internal RAG mechanisms.
+- Confirmed Course 6 is an eleven-hour course and remains not started.
+- Preserved the newer shared-workspace state: Course 3 is in progress as the sole active block.
+
+## Credential guardrails - Date: 2026-08-08
+
+- Confirmed local `.env` files are ignored and not tracked without reading or displaying their contents.
+- Added persistent API-key safety rules for every future task and generated practice lab.
+- Added a value-redacting repository secret scanner covering common provider keys, GitHub/AWS credentials, private keys, sensitive filenames, and generic hardcoded secret assignments.
+- Activated pre-commit and pre-push hooks and added the same scanner to GitHub Actions.
+- Added `SECURITY.md` with safe environment-variable usage and an immediate revoke/rotate procedure for suspected exposure.
+- Verified the current repository passes the scan and the scanner's detection self-test.

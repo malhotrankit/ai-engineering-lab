@@ -13,13 +13,20 @@ __pycache__/
 temp_*.html
 temp_*.pdf
 
-# API Keys — never commit
+# API keys and credentials - never commit
 .env
-.env.local
-.env.production
-.env.staging
+.env.*
 **/.env
-**/coursera_notes/.env
+**/.env.*
+!.env.example
+!**/.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+service-account*.json
+secrets.*
 
 # ChromaDB & LlamaIndex runtime storage (auto-generated on first run)
 chroma_db/
