@@ -1,0 +1,3 @@
+# Course notes contain explanatory and scratch scripts that are not part of the
+# application quality gate. Lint the maintained package, tests, and tooling.
+extend-exclude = ["coursera_notes"]

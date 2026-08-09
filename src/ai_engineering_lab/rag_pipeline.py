@@ -10,9 +10,11 @@ class RAGChunk(BaseModel):
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
-def split_document(text: str, chunk_size: int = 1000, chunk_overlap: int = 100) -> list[str]:
+def split_document(
+    text: str, chunk_size: int = 1000, chunk_overlap: int = 100
+) -> list[str]:
     """Splits raw document text recursively by double newlines, single newlines, and spaces.
-    
+
     Ensures sentences remain contiguous without mid-word slicing.
     """
     if not text.strip():

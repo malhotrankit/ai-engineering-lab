@@ -228,7 +228,9 @@ def is_table_separator(line: str) -> bool:
     return bool(cells) and all(re.fullmatch(r":?-{3,}:?", cell) for cell in cells)
 
 
-def parse_table(lines: list[str], styles: dict[str, ParagraphStyle], width: float) -> Table:
+def parse_table(
+    lines: list[str], styles: dict[str, ParagraphStyle], width: float
+) -> Table:
     raw_rows = [
         [cell.strip() for cell in line.strip().strip("|").split("|")]
         for line in lines
@@ -269,7 +271,9 @@ def parse_table(lines: list[str], styles: dict[str, ParagraphStyle], width: floa
     return table
 
 
-def markdown_story(markdown: str, styles: dict[str, ParagraphStyle], width: float) -> list:
+def markdown_story(
+    markdown: str, styles: dict[str, ParagraphStyle], width: float
+) -> list:
     lines = markdown.splitlines()
     story: list = []
     index = 0
@@ -284,7 +288,7 @@ def markdown_story(markdown: str, styles: dict[str, ParagraphStyle], width: floa
                 code = normalize_text("\n".join(code_lines))
                 story.append(
                     Table(
-                        [[XPreformatted(html.escape(code), styles["code"]) ]],
+                        [[XPreformatted(html.escape(code), styles["code"])]],
                         colWidths=[width],
                         style=TableStyle(
                             [
@@ -349,7 +353,9 @@ def markdown_story(markdown: str, styles: dict[str, ParagraphStyle], width: floa
         bullet = re.match(r"^\s*[-*]\s+(.+)$", raw)
         if bullet:
             story.append(
-                Paragraph(inline_markup(bullet.group(1)), styles["bullet"], bulletText="-")
+                Paragraph(
+                    inline_markup(bullet.group(1)), styles["bullet"], bulletText="-"
+                )
             )
             index += 1
             continue
@@ -384,10 +390,16 @@ def markdown_story(markdown: str, styles: dict[str, ParagraphStyle], width: floa
                 break
             paragraph_lines.append(candidate_stripped)
             index += 1
-        story.append(Paragraph(inline_markup(" ".join(paragraph_lines)), styles["body"]))
+        story.append(
+            Paragraph(inline_markup(" ".join(paragraph_lines)), styles["body"])
+        )
 
     if in_code and code_lines:
-        story.append(XPreformatted(html.escape(normalize_text("\n".join(code_lines))), styles["code"]))
+        story.append(
+            XPreformatted(
+                html.escape(normalize_text("\n".join(code_lines))), styles["code"]
+            )
+        )
     return story
 
 
@@ -397,7 +409,9 @@ def page_decorator(short_title: str):
         page_width, page_height = A4
         canvas.setStrokeColor(LINE)
         canvas.setLineWidth(0.5)
-        canvas.line(18 * mm, page_height - 13 * mm, page_width - 18 * mm, page_height - 13 * mm)
+        canvas.line(
+            18 * mm, page_height - 13 * mm, page_width - 18 * mm, page_height - 13 * mm
+        )
         canvas.setFont("Helvetica", 7.5)
         canvas.setFillColor(MUTED)
         canvas.drawString(18 * mm, page_height - 10 * mm, short_title)

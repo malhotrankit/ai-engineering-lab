@@ -67,9 +67,10 @@ def repository_paths() -> list[Path]:
 
 
 def has_sensitive_path(path: Path) -> bool:
-    relative = path.relative_to(ROOT)
     lower_name = path.name.lower()
-    if lower_name == ".env" or (lower_name.startswith(".env.") and lower_name != ".env.example"):
+    if lower_name == ".env" or (
+        lower_name.startswith(".env.") and lower_name != ".env.example"
+    ):
         return True
     if path.suffix.lower() in {".pem", ".key", ".p12", ".pfx"}:
         return True
@@ -123,7 +124,9 @@ def main() -> int:
         print("Revoke/rotate any real exposed credential before continuing.")
         return 1
 
-    print("Secret scan passed: no credential patterns found in tracked or unignored files.")
+    print(
+        "Secret scan passed: no credential patterns found in tracked or unignored files."
+    )
     return 0
 
 
